@@ -6,6 +6,10 @@
         controller: "MainCtrl",
         templateUrl: "main.html"
     })
+    .when('/csv', {
+        controller: "CsvCtrl",
+        templateUrl: "csv.html"
+    })
     .otherwise({ redirectTo: '/' });
 
 });
@@ -45,7 +49,11 @@ app.controller("Root", function ($rootScope) {
     };
 });
 
+var scope;
 app.controller("MainCtrl", function ($location, $scope, $rootScope) {
+
+    scope = $scope;
+
     rScope.debug = $scope.debug = !!$location.search().test;
 
     $rootScope.questions = $scope.questions = angular.copy(systemdata.questions);
@@ -122,11 +130,10 @@ app.controller("MainCtrl", function ($location, $scope, $rootScope) {
             );
     }
 
+    $scope.getAnswers = getAnswers;
 
     function usesWindows() {
-        return _.any($scope.questions[1].answers, function (a) {
-            return a.checked === true && (a.aid === 0 || a.aid === 1);
-        });
+        return $scope.questions[1].checked == 0 || $scope.questions[1].checked == 1;
     }
 
     $scope.calculateRisks = function () {
@@ -175,12 +182,128 @@ app.controller("MainCtrl", function ($location, $scope, $rootScope) {
 
     $scope.postComment = function () {
         if ($scope.comment.text) {
-            alert($scope.comment.text);
-
             $scope.comment.enabled = false;
+            try
+            {
+                if (fbEntry == null)
+                    console.log('fbEntry is null!!!');
+                else
+                    fbEntry.update({ comment: $scope.comment.text });
+            }
+            catch(ex)
+            {
+                console.log('error saving comment...', ex);
+            }
         }
     };
+
+    var fbEntry = null;
+
+    $scope.saveResults = function () {
+        try
+        {
+            function mapAnswer(a)
+            {
+                return {
+                    aid: a.aid,
+                    text: a.text.lv
+                }
+            }
+
+            if (fbEntry != null)
+                fbEntry = null;
+
+            var fb = new Firebase("https://idre.firebaseio.com/answers");
+            var auth = new FirebaseSimpleLogin(fb, function(error, user) {});
+            auth.login('anonymous');
+
+            fbEntry = fb.push();
+
+            var entry = {};
+
+            entry.answers = _.map(scope.questions, function (q) {
+                if (scope.qenabled(q) == false)
+                    return;
+
+                return {
+                    qid: q.qid,
+                    text: q.text.lv,
+                    answers: q.multiple ? _.map(_.where(q.answers, { checked: true }), mapAnswer) : mapAnswer(q.answers[q.checked])
+                }
+            });
+
+            entry.risks = _.map(scope.calculateRisks(), function (o) { return { rid: o.rid, checked: o.checked, score: o.score, text: o.text.lv } });
+
+            fbEntry.set(entry);
+        }
+        catch(ex)
+        {
+            console.log('error saving data...', ex);
+        }
+    }
 });
+
+app.controller("CsvCtrl", function ($scope) {
+    $scope.getCsv = function () {
+        var fb = new Firebase("https://idre.firebaseio.com/answers");
+        var auth = new FirebaseSimpleLogin(fb, function (error, user) {
+            if (error) {
+                // an error occurred while attempting login
+                alert(error);
+                console.log(error);
+            } else if (user) {
+                // user authenticated with Firebase
+            } else {
+                // user is logged out
+                auth.login('password', { email: $scope.email, password: $scope.password, debug: true });
+            }
+        });
+
+        fb.once('value', function (snapshot) {
+            var data = snapshot.val();
+            $scope.$apply(function () {
+                $scope.export = processCSV(data);
+                var link = document.createElement("a");
+                link.setAttribute("href", 'data:text/csv;' + encodeURI($scope.export));
+                link.setAttribute("download", "aptaujas_dati.csv");
+                link.click();
+            });
+        });
+    }
+});
+
+function processCSV(data) {
+
+    function sanitize(text) {
+        return text.replace(/"/g, '""').replace(/;/g, ',');
+    }
+
+    var output = ['Aptaujas ID;Jautājuma ID;Jautājums;Atbildes ID;Atbilde;Riska ID;Risks;Svars;Riska pakāpe;Komentārs'];
+
+    _.each(_.keys(data), function (key) {
+        var entry = data[key];
+        _.each(entry.answers, function (q) {
+
+            if (_.isArray(q.answers)) {
+                _.each(q.answers, function (a) {
+                    output.push('"' + ["'" + key + "'", q.qid, sanitize(q.text), a.aid, sanitize(a.text)].join('";"') + '";;;;');
+                });
+            }
+            else {
+                output.push('"' + ["'" + key + "'", q.qid, sanitize(q.text), q.answers.aid, sanitize(q.answers.text)].join('";"') + '";;;;');
+            }
+        });
+
+        _.each(entry.risks, function (r) {
+            output.push('"\'' + key + '\'";;;;;"' + [r.rid, sanitize(r.text), r.checked, r.score].join('";"') + '"');
+        });
+
+        if (entry.comment)
+            output.push('"' + "'" + key + "'" + '";;;;;;;;;"' + sanitize(entry.comment) + '"');
+
+    });
+    return output.join('\n');
+}
 
 app.directive('result', function ($rootScope) {
     return {

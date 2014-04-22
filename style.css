@@ -15,7 +15,7 @@ a {
 html, body {
     height:100%;
     width:100%;
-    background-color:#23384E; /*#001F3F;*/
+    background-color:#23384E;
 }
 
 #view
@@ -25,11 +25,15 @@ html, body {
 }
 
 .container {
-    height:100%;
-    box-shadow: 0 0 10px #001F3F inset;
-    padding: 30px;
+    height: auto;
+    min-height:100%;
+    padding: 30px; 
     background-color: #fff;
-    overflow-y: auto;
+    display: block;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
 }
 
 .jumbotron p {
@@ -40,6 +44,10 @@ html, body {
     margin-top: 5px;
     margin-bottom: 5px;
 }
+
+    .radio + .radio, .checkbox + .checkbox {
+        margin-top:5px;
+    }
 
 .risk {
     display: inline;
