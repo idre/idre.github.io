@@ -103,7 +103,7 @@
                         <div><textarea data-ng-model="comment.text"></textarea></div>
                         <button class="btn btn-default" data-ng-click="postComment()">{{ ui.send | lang }}</button>
                     </div>
-                    <div data-ng-show="comment.enabled==false">
+                    <div data-ng-show="comment.text && comment.enabled==false">
                         <h5>{{ ui.thanks | lang }}</h5>
                     </div>
                 </div>
