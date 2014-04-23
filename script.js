@@ -179,9 +179,12 @@ app.controller("MainCtrl", function ($location, $scope, $rootScope) {
         text: '',
         enabled: null
     };
+    
+    if (rScope.debug)
+        $scope.comment.enabled = false;
 
     $scope.postComment = function () {
-        if ($scope.comment.text) {
+        if ($scope.comment.text && rScope.debug == false) {
             $scope.comment.enabled = false;
             try
             {
@@ -200,6 +203,12 @@ app.controller("MainCtrl", function ($location, $scope, $rootScope) {
     var fbEntry = null;
 
     $scope.saveResults = function () {
+        if (rScope.debug == true)
+        {
+            console.log('debug mode');
+            return;
+        }
+        
         try
         {
             function mapAnswer(a)
