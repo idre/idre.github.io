@@ -275,7 +275,7 @@ app.controller("CsvCtrl", function ($scope) {
             $scope.$apply(function () {
                 $scope.export = processCSV(data);
                 var link = document.createElement("a");
-                link.setAttribute("href", 'data:text/csv;' + encodeURI($scope.export));
+                link.setAttribute("href", 'data:text/csv;charset=utf-8,\uFEFF' + encodeURI($scope.export));
                 link.setAttribute("download", "aptaujas_dati.csv");
                 link.click();
             });
@@ -286,10 +286,10 @@ app.controller("CsvCtrl", function ($scope) {
 function processCSV(data) {
 
     function sanitize(text) {
-        return text.replace(/"/g, '""').replace(/;/g, ',');
+        return text.replace(/"/g, '""').replace(/,/g, ';');
     }
 
-    var output = ['Aptaujas ID;Jautājuma ID;Jautājums;Atbildes ID;Atbilde;Riska ID;Risks;Svars;Riska pakāpe;Komentārs'];
+    var output = ['Aptaujas ID,Jautājuma ID,Jautājums,Atbildes ID,Atbilde,Riska ID,Risks,Svars,Riska pakāpe,Komentārs'];
 
     _.each(_.keys(data), function (key) {
         var entry = data[key];
@@ -297,20 +297,20 @@ function processCSV(data) {
 
             if (_.isArray(q.answers)) {
                 _.each(q.answers, function (a) {
-                    output.push('"' + ["'" + key + "'", q.qid, sanitize(q.text), a.aid, sanitize(a.text)].join('";"') + '";;;;');
+                    output.push('"' + ["'" + key + "'", q.qid, sanitize(q.text), a.aid, sanitize(a.text)].join('","') + '",,,,');
                 });
             }
             else {
-                output.push('"' + ["'" + key + "'", q.qid, sanitize(q.text), q.answers.aid, sanitize(q.answers.text)].join('";"') + '";;;;');
+                output.push('"' + ["'" + key + "'", q.qid, sanitize(q.text), q.answers.aid, sanitize(q.answers.text)].join('","') + '",,,,');
             }
         });
 
         _.each(entry.risks, function (r) {
-            output.push('"\'' + key + '\'";;;;;"' + [r.rid, sanitize(r.text), r.checked, r.score].join('";"') + '"');
+            output.push('"\'' + key + '\'",,,,,"' + [r.rid, sanitize(r.text), r.checked, r.score].join('","') + '"');
         });
 
         if (entry.comment)
-            output.push('"' + "'" + key + "'" + '";;;;;;;;;"' + sanitize(entry.comment) + '"');
+            output.push('"' + "'" + key + "'" + '",,,,,,,,,"' + sanitize(entry.comment) + '"');
 
     });
     return output.join('\n');
