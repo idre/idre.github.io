@@ -264,9 +264,11 @@ app.controller("CsvCtrl", function ($scope) {
                 // user authenticated with Firebase
             } else {
                 // user is logged out
-                auth.login('password', { email: $scope.email, password: $scope.password, debug: true });
+                auth.login('password', { email: $scope.email, password: $scope.password });
             }
         });
+
+        auth.login('password', { email: $scope.email, password: $scope.password });
 
         fb.once('value', function (snapshot) {
             var data = snapshot.val();
