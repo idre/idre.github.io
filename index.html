@@ -73,7 +73,7 @@
                         <div><b>{{ ui.riskpage2 | lang }}</b></div>
                         <div>{{ ui.riskpage3 | lang }}</div>
                     </div>
-                    <div class="form-group" data-ng-repeat="r in enabledRisks() | orderBy:rid">
+                    <div class="form-group" data-ng-repeat="r in enabledRisks() | orderBy:'rid'">
                         <label>{{ r.text | lang }}</label>
                         <div class="answers">
                             <div class="btn-group">

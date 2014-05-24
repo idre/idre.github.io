@@ -355,39 +355,6 @@ systemdata.questions = [
     {
         qid: 7,
         text: {
-            'lv': "Cik informēts Tu esi par IT drošības pārvaldību?",
-            'en': "How well informed are you about IT safety management?"
-        },
-        multiple: false,
-        answers: [
-            {
-                aid: 0,
-                adjust_risk: { 6: -2, 7: -2 },
-                text: {
-                    'lv': "Ir plašas zināšanas un pieredze",
-                    'en': "Broad knowledge and experience"
-                }
-            },
-            {
-                aid: 1,
-                adjust_risk: { 6: -1, 7: -1 },
-                text: {
-                    'lv': "Zinu pamatprincipus un vienkāršākās darbības",
-                    'en': "Informed about basic principles and simple procedures"
-                }
-            },
-            {
-                aid: 2,
-                text: {
-                    'lv': "Ne īpaši",
-                    'en': "Not really"
-                }
-            }
-        ]
-    },
-    {
-        qid: 8,
-        text: {
             'lv': "Vai programmatūra tiek regulāri atjaunota?",
             'en': "Is software updated regularly?"
         },
@@ -414,6 +381,39 @@ systemdata.questions = [
                 text: {
                     'lv': "Netiek veikti atjauninājumi",
                     'en': "Software is not updated regularly"
+                }
+            }
+        ]
+    },
+    {
+        qid: 8,
+        text: {
+            'lv': "Cik informēts Tu esi par IT drošības pārvaldību?",
+            'en': "How well informed are you about IT safety management?"
+        },
+        multiple: false,
+        answers: [
+            {
+                aid: 0,
+                adjust_risk: { 6: -2, 7: -2 },
+                text: {
+                    'lv': "Ir plašas zināšanas un pieredze",
+                    'en': "Broad knowledge and experience"
+                }
+            },
+            {
+                aid: 1,
+                adjust_risk: { 6: -1, 7: -1 },
+                text: {
+                    'lv': "Zinu pamatprincipus un vienkāršākās darbības",
+                    'en': "Informed about basic principles and simple procedures"
+                }
+            },
+            {
+                aid: 2,
+                text: {
+                    'lv': "Ne īpaši",
+                    'en': "Not really"
                 }
             }
         ]
@@ -536,7 +536,7 @@ systemdata.risks = [
     },
     {
         rid: 5,
-        checked: 3,
+        checked: 2,
         text: {
             'lv': "Pazaudējot USB atmiņas karti vai telefonu, zaudēti dati",
             'en': "Data has been lost because of lost mobile phone or flash drive"
