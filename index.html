@@ -29,7 +29,7 @@
     <script type="text/ng-template" id="main.html">
         <div class="container">
             <h3 style="text-align:center;"><a href="#/">{{ ui.sysname | lang }}</a></h3>
-            <div data-ng-show="step == 1">
+            <div class="animate" data-ng-show="step == 1">
                 <form role="form">
                     <div class="form-group" data-ng-repeat="q in questions | first:3" data-ng-show="qenabled(q)">
                         <label>{{ q.text | lang }}</label>
@@ -47,7 +47,7 @@
                     <button class="btn btn-primary" data-ng-class="{'disabled': continueDisabled()}" data-ng-click="next()">{{ ui.continue | lang }}</button>
                 </form>
             </div>
-            <div data-ng-show="step == 2">
+            <div class="animate" data-ng-show="step == 2">
                 <form role="form">
                     <div class="form-group" data-ng-repeat="q in questions | rest:3" data-ng-show="qenabled(q)">
                         <label>{{ q.text | lang }}</label>
@@ -66,7 +66,7 @@
                     <button class="btn btn-link" data-ng-click="prev()">{{ ui.back | lang }}</button>
                 </form>
             </div>
-            <div data-ng-show="step == 3">
+            <div class="animate" data-ng-show="step == 3">
                 <form role="form">
                     <div style="margin-bottom:10px;">
                         <div>{{ ui.riskpage1 | lang }}</div>
@@ -87,7 +87,7 @@
                     <button class="btn btn-link" data-ng-click="prev()">{{ ui.back | lang }}</button>
                 </form>
             </div>
-            <div data-ng-if="step == 4" data-ng-init="risks=calculateRisks();saveResults()">
+            <div class="animate" data-ng-if="step == 4" data-ng-init="risks=calculateRisks();saveResults()">
                 <form data-ng-if="result_types.highrisks">
                     <h4>{{ ui.highrisks | lang }}</h4>
                     <div data-result="r" data-ng-repeat="r in risks | resulttype:true"></div>

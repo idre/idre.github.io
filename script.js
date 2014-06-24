@@ -62,14 +62,19 @@ app.controller("MainCtrl", function ($location, $scope, $rootScope) {
     $scope.step = 1;
 
     function qchecked(qid, aid) {
-        return !!$scope.questions[qid].answers[aid].checked;
+        if ($scope.questions[qid].multiple == false)
+            return $scope.questions[qid].checked == aid;
+        else
+            return !!$scope.questions[qid].answers[aid].checked;
     }
 
     $scope.qenabled = function(q) {
-        if (q.qid == 3 && !qchecked(2, 0))
-            return false;
-
-        return true;
+        if (q.qid == 3)
+            return qchecked(2, 0);
+        else if (q.qid == 4 || q.qid == 5)
+            return qchecked(1, 0) || qchecked(1, 1);
+        else
+            return true;
     };
 
     $scope.continueDisabled = function() {
