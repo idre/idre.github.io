@@ -97,15 +97,8 @@
                     <div data-result="r" data-ng-repeat="r in risks | resulttype:false"></div>
                 </form>
                 <div class="comment">
-                    <button type="button" class="btn btn-primary btn-lg" data-ng-show="comment.enabled==null" data-ng-click="comment.enabled=true">{{ ui.feedback | lang }}</button>
+                    <a href="http://www.visidati.lv/aptauja/979834719/" target="_blank" class="btn btn-primary btn-lg" data-ng-show="comment.enabled==null" >{{ ui.feedback | lang }}</a>
                     <a href="#/" class="btn btn-default btn-lg">{{ ui.backtostart | lang }}</a>
-                    <div data-ng-show="comment.enabled==true">
-                        <div><textarea data-ng-model="comment.text"></textarea></div>
-                        <button class="btn btn-default" data-ng-click="postComment()">{{ ui.send | lang }}</button>
-                    </div>
-                    <div data-ng-show="comment.text && comment.enabled==false">
-                        <h5>{{ ui.thanks | lang }}</h5>
-                    </div>
                 </div>
             </div>
             <div class="debug" data-ng-if="debug">
@@ -122,8 +115,11 @@
     <script type="text/ng-template" id="result.html">
         <div class="well" data-ng-class="{'low' : result.score <= 3, 'medium' : result.score >= 4 && result.score <= 6, 'high' : result.score >= 7 }">
             <span class="badge">{{ result.score }}</span>
-            <h5>{{result.text | lang}}</h5>
-            <span data-ng-if="result.suggestion">{{ ui.advice | lang }} {{result.suggestion | lang}}</span>
+            <h5>{{ result.text | lang }}</h5>
+            <div data-ng-if="result.suggestion">
+                <span>{{ ui.advice | lang }} {{result.suggestion | lang}} {{ ui.readmore | lang }}</span>
+                <div ng-repeat="l in result.links"><a ng-href="{{'http://' + l}}" target="_blank">{{l}}</a></div>
+            </div>
         </div>
     </script>
 
